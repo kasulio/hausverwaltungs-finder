@@ -12,11 +12,10 @@ if ! command -v bun >/dev/null 2>&1; then
 fi
 bun --version
 
-bun install
-
 # Dev defaults for the env vars validated by env.ts (@t3-oss/env-nuxt).
-# Gitignored. Bun auto-loads .env; real secrets injected as process env vars
-# take precedence, so adding e.g. GOOGLE_MAPS_API_KEY as a Cursor secret wins.
+# Must exist before `bun install`, whose postinstall runs `nuxt prepare` and
+# validates these. Gitignored. Bun auto-loads .env; real secrets injected as
+# process env vars take precedence, so e.g. a GOOGLE_MAPS_API_KEY Cursor secret wins.
 if [ ! -f .env ]; then
   cat > .env <<'EOF'
 GOOGLE_MAPS_API_KEY=dev-placeholder
@@ -27,6 +26,8 @@ BETTER_AUTH_SECRET=dev-only-secret-change-me-0123456789abcdef
 DEPLOYMENT_URL=http://localhost:3000
 EOF
 fi
+
+bun install
 
 # Bootstrap the SQLite schema. `bun db:migrate` dedupes flats *before* migrating,
 # which throws on an empty DB (no `flat` table yet), so apply migrations directly.
