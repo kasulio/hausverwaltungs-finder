@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
-# Idempotent Cloud Agent bootstrap: dependencies, dev env file, SQLite schema.
+# Idempotent Cloud Agent bootstrap: Bun runtime, deps, dev env file, SQLite schema.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+# Bun (repo's package manager + runtime) is not in the default image. Install it
+# and expose it on the global PATH so `bun dev` works in the dev terminal too.
+if ! command -v bun >/dev/null 2>&1; then
+  curl -fsSL https://bun.sh/install | bash
+  sudo ln -sf "$HOME/.bun/bin/bun" /usr/local/bin/bun
+  sudo ln -sf "$HOME/.bun/bin/bun" /usr/local/bin/bunx
+fi
+bun --version
 
 bun install
 
