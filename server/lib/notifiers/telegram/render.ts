@@ -73,9 +73,10 @@ export function renderNotification(f: NotifiableFlat): RenderedNotification {
 
   const caption = `🏠 <b>Neues Wohnungsangebot</b>\n\n${body}`;
 
-  const keyboard = new InlineKeyboard().url("🔗 Anschauen", f.url);
+  const keyboard = new InlineKeyboard();
   const maps = mapsUrl(f);
   if (maps) keyboard.url("🗺️ Google Maps", maps);
+  keyboard.url("🔗 Anschauen", f.url);
 
   return { caption, keyboard };
 }
