@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "~/server/db/client";
 import { flat } from "~/server/db/schema";
 import { propertyManagementConfigs } from "~/data/propertyManagements/configs";
+import { unknownDistrict, zipCodeToDistrict } from "~/data/districts";
 import { type NotifiableFlat } from "~/server/lib/notifiers/types";
 import { escapeHtml } from "./html";
 
@@ -29,6 +30,11 @@ function providerName(id: string | null): string | null {
   const cfg =
     propertyManagementConfigs[id as keyof typeof propertyManagementConfigs];
   return cfg?.name ?? id;
+}
+
+function formatDistrict(f: NotifiableFlat): string | null {
+  if (!f.postalCode) return null;
+  return zipCodeToDistrict[f.postalCode]?.name ?? unknownDistrict.name;
 }
 
 function formatAddress(f: NotifiableFlat): string | null {
@@ -63,6 +69,7 @@ export function renderNotification(f: NotifiableFlat): RenderedNotification {
     ["Zimmer", f.roomCount != null ? String(f.roomCount) : null],
     ["Fläche", formatArea(f.usableArea)],
     ["Anbieter", providerName(f.propertyManagementId)],
+    ["Bezirk", formatDistrict(f)],
     ["Adresse", formatAddress(f)],
   ];
 
