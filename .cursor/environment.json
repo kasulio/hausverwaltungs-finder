@@ -1,0 +1,11 @@
+{
+  "name": "Hausverwaltungs-Finder",
+  "install": "./.cursor/install.sh",
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "bun dev"
+    }
+  ],
+  "ports": [3000]
+}
